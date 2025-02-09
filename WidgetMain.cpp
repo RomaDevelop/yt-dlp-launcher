@@ -115,12 +115,23 @@ WidgetMain::WidgetMain(QWidget *parent)
 
 	connect(btnLaunch, &QPushButton::clicked, [this, command](){
 		MyQFileDir::WriteFile(pathFiles + "/command.bat",
-							  "cd \"" + editDownloadPath->text() + "\"\n"
-							  + "\"" + editYtDlpExe->text() + "\" " + command->text() + " \n"
+							editDownloadPath->text().left(2) + "\n"
+							"cd \"" + editDownloadPath->text() + "\""
+							"\n\"" + editYtDlpExe->text() + "\" " + command->text() + " \n"
 							  + "pause\n");
 		//MyQExecute::Execute(pathFiles + "/command.bat");
 		system(("\"" + pathFiles + "/command.bat" + "\"").toStdString().c_str());
 	});
+
+	struct Setting
+	{
+		QString caption;
+		QString hint;
+		QString command;
+	};
+	std::vector<Setting> settings;
+	settings.push_back({"height", "Разрешение (будет скачано не более или точно такое)", "-S \"height:%\""});
+	settings.push_back({"name video", "Имя скачиваемого файла (расширение не указывать)", "-o \"%\""});
 
 	notesFileName = pathFiles + "/note.txt";
 	connect(btnNote, &QPushButton::clicked, [this](){
